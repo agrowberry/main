@@ -8,7 +8,7 @@
 
 
 // create class instances
-Sensors Sens;
+
 Bumpers Bump;
 Motors Mot;
 PointCloud pc_od;
@@ -33,7 +33,7 @@ void onBump() {
 float last_x;
 float last_y;
 int count_same = 0;
-int but_A = 14;
+
 
 void setup() {
   Serial.begin(9600);
@@ -47,35 +47,39 @@ void setup() {
 
 void loop() {
   // when point cloud reaches designated size sned data to serial
-  while (pc_od.hits == pc_ac.shape) {
-    Mot.set_velocity(0);
-    Serial.println("Odometry Point Cloud Positional Data:");
-    pc_od.dump_to_serial();
-    Serial.println("Accelerometer Point Cloud Positional Data:");
-    pc_ac.dump_to_serial();
-    delay(1000);
-  }
+//  while (pc_od.hits == pc_ac.shape) {
+//    Mot.set_velocity(0);
+//    Serial.println("Odometry Point Cloud Positional Data:");
+//    pc_od.dump_to_serial();
+//    Serial.println("Accelerometer Point Cloud Positional Data:");
+//    pc_ac.dump_to_serial();
+//    delay(1000);
+//  }
+//
+//  trace.update();
+//  inertial.Read_Accel_Gyro();
+//
+//  // if bumper is hit
+//  if (Bump.detect_hit(7500)) {
+//    onBump();
+//  }
+//
+//  // if wheels are stuck
+//  // measures if 
+//  if ((trace.X == last_x) && (trace.Y == last_y)) {
+//    count_same += 1;
+//    if (count_same > 10) {
+//      onBump();
+//      count_same = 0;
+//    }
+//  } else {
+//    count_same = 0;
+//  }
+//
+//  last_x = trace.X;
+//  last_y = trace.Y;
+  Bump.pingAll();
+  Bump.to_serial(true, true);
 
-  trace.update();
-  inertial.Read_Accel_Gyro();
-
-  // if bumper is hit
-  if (Bump.detect_hit(7500)) {
-    onBump();
-  }
-
-  // if wheels are stuck
-  // measures if 
-  if ((trace.X == last_x) && (trace.Y == last_y)) {
-    count_same += 1;
-    if (count_same > 10) {
-      onBump();
-      count_same = 0;
-    }
-  } else {
-    count_same = 0;
-  }
-
-  last_x = trace.X;
-  last_y = trace.Y;
+  
 }

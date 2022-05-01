@@ -93,14 +93,26 @@ class Bumpers {
   }
 
   // print raw sensor values to serial
-  void to_serial() {
+  void to_serial(bool inc_time, bool for_python) {
 
-    Serial.print("LB: ");
-    Serial.print(sensor_read[0]);
-    Serial.print(" - RB: ");
-    Serial.print(sensor_read[1]);
+    if (for_python) {
+      Serial.print(sensor_read[0]);
+      Serial.print(",");
+      Serial.print(sensor_read[1]);
+      Serial.print(",");
+      Serial.print(micros());
+    } else {
+      Serial.print("LB: ");
+      Serial.print(sensor_read[0]);
+      Serial.print(" - RB: ");
+      Serial.print(sensor_read[1]);
+      if (inc_time) {
+        Serial.print(" - time: ");
+        Serial.print(micros());
+        }
+    }
     Serial.print("\n");
-
+    
   }
 
 };
