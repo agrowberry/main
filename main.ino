@@ -1,18 +1,16 @@
-#include "Sensors.h"
+#include "bumpers.h"
 
-#include "Bumpers.h"
+#include "motors.h"
 
-#include "Motors.h"
-
-#include "PointCloud.h"
+#include "point_cloud.h"
 
 #include "accel.h"
 
 
 // create class instances
-Sensors mySens;
-Bumpers myBump;
-Motors myMot;
+Sensors Sens;
+Bumpers Bump;
+Motors Mot;
 PointCloud pc_od;
 PointCloud pc_ac;
 IMU inertial;
@@ -21,14 +19,14 @@ IMU inertial;
 void onBump() {
   pc_od.add_point(trace.X, trace.Y, trace.phi);
   pc_ac.add_point(trace.X, trace.Y, trace.phi);
-  myMot.set_velocity(0);
+  Mot.set_velocity(0);
   delay(1000);
-  myMot.set_velocity(-20);
+  Mot.set_velocity(-20);
   delay(500);
   trace.update();
-  myMot.turn_degrees(90, true);
+  Mot.turn_degrees(90, true);
   trace.phi += float(90 / (2 * PI));
-  myMot.set_velocity(20);
+  Mot.set_velocity(20);
   trace.update();
 }
 
@@ -39,8 +37,8 @@ int but_A = 14;
 
 void setup() {
   Serial.begin(9600);
-  myBump.calibrate_sensors();
-  myMot.set_velocity(20);
+  Bump.calibrate_sensors();
+  Mot.set_velocity(20);
   pc_od.zero_points();
   pc_ac.zero_points();
   inertial.AccelMeter();
@@ -48,9 +46,9 @@ void setup() {
 }
 
 void loop() {
-
+  // when point cloud reaches designated size sned data to serial
   while (pc_od.hits == pc_ac.shape) {
-    myMot.set_velocity(0);
+    Mot.set_velocity(0);
     Serial.println("Odometry Point Cloud Positional Data:");
     pc_od.dump_to_serial();
     Serial.println("Accelerometer Point Cloud Positional Data:");
@@ -61,12 +59,13 @@ void loop() {
   trace.update();
   inertial.Read_Accel_Gyro();
 
-  //If bumper is hit
-  if (myBump.detect_hit(7500)) {
+  // if bumper is hit
+  if (Bump.detect_hit(7500)) {
     onBump();
   }
 
-  //If wheels are stuck
+  // if wheels are stuck
+  // measures if 
   if ((trace.X == last_x) && (trace.Y == last_y)) {
     count_same += 1;
     if (count_same > 10) {
