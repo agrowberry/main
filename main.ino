@@ -18,7 +18,7 @@ IMU inertial;
 // define actions for after detection of wall
 void onBump() {
     pc_od.addPoint(trace.X, trace.Y, trace.phi);
-    pc_ac.addPoint(trace.X, trace.Y, trace.phi);
+    pc_ac.addPoint(inertial.X, inertial.Y, inertial.yaw);
     Mot.setVelocity(0);
     delay(1000);
     Mot.setVelocity(-20);

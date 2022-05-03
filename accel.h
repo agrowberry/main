@@ -74,7 +74,7 @@ float callibrateAccel(){
   float abgyro = sqrt((imu.g.x)^2+(imu.g.y)^2+(imu.g.z)^2);
 
   unsigned long current_time = millis();
-//  unsigned long delta_t;
+  
   if ( isnan(abgyro) ){
     abgyro = 0;
   }
@@ -102,35 +102,25 @@ void readAccelGyro(){
   long current_acc_x = acc_x;
   long current_acc_y = acc_y;
 
-//  if ( abs((current_acc_x - prev_acc_x)/prev_acc_x) < 0.005) {
-//      Serial.println("No Change");
-//      Serial.println((current_acc_x - prev_acc_x)/prev_acc_x);
-//      delta_dis_x = 0;
-//  }
-//
-//  if ( abs((current_acc_y - prev_acc_y)/prev_acc_y) < 0.005) {
-//      delta_dis_y = 0;
-//      
-//  } else {
-      if (abs(acc_x) < 100) {
-        acc_x = 0;
-        vel_x = 0.9 * vel_x;
-      }
+  if (abs(acc_x) < 100) {
+    acc_x = 0;
+    vel_x = 0.9 * vel_x;
+  }
 
-      if (abs(acc_y) < 100) {
-        acc_y = 0;
-        vel_y = 0.9 * vel_y;
-      }
-      delta_vel_y = acc_y * elapsed_time ;
-      vel_y = vel_y + delta_vel_y ;
-      delta_vel_x = acc_x * elapsed_time ;
-      vel_x = vel_x + delta_vel_x ;
-      
-      delta_dis_y = vel_y * elapsed_time ;
-      dis_y += delta_dis_y;
-      delta_dis_x = vel_x * elapsed_time ;
-      dis_x += delta_dis_x; 
-//  }
+  if (abs(acc_y) < 100) {
+    acc_y = 0;
+    vel_y = 0.9 * vel_y;
+  }
+  delta_vel_y = acc_y * elapsed_time ;
+  vel_y = vel_y + delta_vel_y ;
+  delta_vel_x = acc_x * elapsed_time ;
+  vel_x = vel_x + delta_vel_x ;
+  
+  delta_dis_y = vel_y * elapsed_time ;
+  dis_y += delta_dis_y;
+  delta_dis_x = vel_x * elapsed_time ;
+  dis_x += delta_dis_x; 
+
      
   gyro_x =  imu.g.x/8.75/ 131.0; // For a 250deg/s range we have to divide first the raw value by 131.0
   gyro_y =  imu.g.y/8.75/ 131.0;
