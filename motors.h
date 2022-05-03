@@ -19,7 +19,7 @@ class Motors {
         int motor_velocity;
 
     // method to set linear 3pi+ speed
-    void set_velocity(int speed) {
+    void setVelocity(int speed) {
           motor_velocity = speed;
           if (speed < 0){
             digitalWrite(l_dir_pin, 1);
@@ -37,7 +37,7 @@ class Motors {
    // method to turn 3pi+ by deg degrees
    // 3pi+ is set to turn in a specified direction, and uses the kinematics trace class to measure its rotation.
    // When rotation reaches desired displacement (within tolerance of 1 degree) the turn is complete and the 3pi+ stops.
-   void turn_degrees(float deg, bool left) {
+   void turnDegrees(float deg, bool left) {
           // set motor pins to correct sign for turn direction
           float degree_val;
           if (left) {
@@ -71,7 +71,7 @@ class Motors {
           }
 
           // return motor to linear motion previous to method call
-          set_velocity(motor_velocity);
+          setVelocity(motor_velocity);
    }
     
   

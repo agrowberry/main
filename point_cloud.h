@@ -7,14 +7,14 @@ class PointCloud {
     int hits = 0;
 
 
-  void add_point(float x, float y, float phi) {
+  void addPoint(float x, float y, float phi) {
     points[hits][0] = x;
     points[hits][1] = y;
     points[hits][2] = phi;
     hits += 1;
   }
 
-  void zero_points() {
+  void zeroPoints() {
     int i;
     for (i=0; i<shape; i++) {
       points[i][0] = 0.0;
@@ -24,7 +24,7 @@ class PointCloud {
     }
   }
 
-  void dump_to_serial() {
+  void dumpToSerial() {
     int i; 
     for (i=0; i<shape; i++) {
         Serial.print(i);

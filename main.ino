@@ -17,69 +17,61 @@ IMU inertial;
 
 // define actions for after detection of wall
 void onBump() {
-  pc_od.add_point(trace.X, trace.Y, trace.phi);
-  pc_ac.add_point(trace.X, trace.Y, trace.phi);
-  Mot.set_velocity(0);
-  delay(1000);
-  Mot.set_velocity(-20);
-  delay(500);
-  trace.update();
-  Mot.turn_degrees(90, true);
-  trace.phi += float(90 / (2 * PI));
-  Mot.set_velocity(20);
-  trace.update();
+    pc_od.addPoint(trace.X, trace.Y, trace.phi);
+    pc_ac.addPoint(trace.X, trace.Y, trace.phi);
+    Mot.setVelocity(0);
+    delay(1000);
+    Mot.setVelocity(-20);
+    delay(500);
+    trace.update();
+    Mot.turnDegrees(90, true);
+    trace.phi += float(90 / (2 * PI));
+    Bump.calibrateSensors();
+    Mot.setVelocity(20);
+    trace.update();
 }
 
-float last_x;
-float last_y;
-int count_same = 0;
+
+
+// define dump to serial of point cloud
+void checkComplete() {
+  // when point cloud reaches designated size sned data to serial
+  while (pc_od.hits == pc_ac.shape) {
+      Mot.setVelocity(0);
+      Serial.println("Odometry Point Cloud Positional Data:");
+      pc_od.dumpToSerial();
+      Serial.println("Accelerometer Point Cloud Positional Data:");
+      pc_ac.dumpToSerial();
+      delay(1000);
+  }
+}
+
+
 
 
 void setup() {
-  Serial.begin(9600);
-  Bump.calibrate_sensors();
-  Mot.set_velocity(20);
-  pc_od.zero_points();
-  pc_ac.zero_points();
-  inertial.AccelMeter();
-  inertial.CallibrateAccel();
+    Serial.begin(9600);
+    Bump.calibrateSensors();
+    Mot.setVelocity(20);
+    pc_od.zeroPoints();
+    pc_ac.zeroPoints();
+    inertial.accelMeter();
+    inertial.callibrateAccel();
 }
 
-void loop() {
-  // when point cloud reaches designated size sned data to serial
-//  while (pc_od.hits == pc_ac.shape) {
-//    Mot.set_velocity(0);
-//    Serial.println("Odometry Point Cloud Positional Data:");
-//    pc_od.dump_to_serial();
-//    Serial.println("Accelerometer Point Cloud Positional Data:");
-//    pc_ac.dump_to_serial();
-//    delay(1000);
-//  }
-//
-//  trace.update();
-//  inertial.Read_Accel_Gyro();
-//
-//  // if bumper is hit
-//  if (Bump.detect_hit(7500)) {
-//    onBump();
-//  }
-//
-//  // if wheels are stuck
-//  // measures if 
-//  if ((trace.X == last_x) && (trace.Y == last_y)) {
-//    count_same += 1;
-//    if (count_same > 10) {
-//      onBump();
-//      count_same = 0;
-//    }
-//  } else {
-//    count_same = 0;
-//  }
-//
-//  last_x = trace.X;
-//  last_y = trace.Y;
-  Bump.pingAll();
-  Bump.to_serial(true, true);
 
+
+void loop() {
+  checkComplete();
+
+  trace.update();
+  inertial.readAccelGyro();
   
+  // if bumper is hit
+  if (Bump.bumpDetect(4500)) {
+      onBump();
+  } else if (trace.statDetect(10)) {
+      onBump();
+  }
+
 }

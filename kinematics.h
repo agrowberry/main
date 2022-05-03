@@ -12,7 +12,7 @@ class Kinematics_c {
   public:
     // all distances in mm, and velocities in mm/s
     float width = 89.2;
-    int velocity = 0;
+    float velocity = 0;
     int dist_travelled = 0;
     float X = 0;
     float Y = 0;
@@ -21,6 +21,11 @@ class Kinematics_c {
     float phi_deg = 0;
     float last_t = micros();
     float g_ratio = 1.53;
+    float l_distance = 0;
+    float r_distance = 0;
+    float last_l = 0;
+    float last_r = 0;
+    int count_same = 0;
     
     // Constructor, must exist.
     Kinematics_c() {
@@ -34,9 +39,13 @@ class Kinematics_c {
       // Take time for velocity calcs
       unsigned long current_t = micros();
       unsigned long delta_t = current_t - last_t;
+      // store last distances for statDetect
+      last_l = l_distance;
+      last_r = r_distance;
+
       // find distance travelled by individual wheels
-      float l_distance = count_l * g_ratio;
-      float r_distance = count_r * g_ratio;
+      l_distance = count_l * g_ratio;
+      r_distance = count_r * g_ratio;
       
       if (l_distance != r_distance) {
           delta_phi = (r_distance - l_distance) / width;
@@ -50,13 +59,28 @@ class Kinematics_c {
       X = X + distance*cos(phi);
       Y = Y + distance*sin(phi);
       dist_travelled = dist_travelled + distance;
+      velocity = distance / (delta_t / 1000000);
 
-//      Serial.println(distance*cos(phi));
-//      Serial.println(distance*sin(phi));
       count_l = 0;
       count_r = 0;
-      
+      last_t = micros();
     }
+
+    // if wheels are stuck
+    bool statDetect(int count_threshold) { 
+
+      if ((last_l == l_distance) && (last_r == r_distance)) {
+          count_same += 1;
+      } else {
+          count_same = 0;
+          return false;
+      }
+      if (count_same >= count_threshold) {
+          count_same = 0;
+          return true;
+      } 
+    }
+    
 
     void zero() {
       velocity = 0;
@@ -67,7 +91,7 @@ class Kinematics_c {
       phi = 0;
     }
 
-    void to_serial() {
+    void toSerial() {
         Serial.print(X);
         Serial.print(":");
         Serial.print(Y);

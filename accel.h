@@ -30,7 +30,7 @@ class IMU{
  
  unsigned long start_time;
 
-void AccelMeter(){
+void accelMeter(){
   
   Wire.begin();
 
@@ -57,7 +57,7 @@ void AccelMeter(){
   
 }
 
-float CallibrateAccel(){
+float callibrateAccel(){
   
   imu.read();
   
@@ -83,7 +83,7 @@ float CallibrateAccel(){
   }
 }
 
-void Read_Accel_Gyro(){
+void readAccelGyro(){
 
   imu.read();
   
@@ -151,14 +151,14 @@ void Read_Accel_Gyro(){
 
   ave_dis = ave_dis + (change_dis);
 
-  calculate_IMU_error();
+  calculateImuError();
 
   prev_acc_x = acc_x;
   prev_acc_y = acc_y;
   previous_time = micros();
 }
 
-void calculate_IMU_error() {
+void calculateImuError() {
 
   // Read accelerometer values 200 times
   while (c < 200) {
@@ -194,7 +194,7 @@ void calculate_IMU_error() {
   gy_error_z = gy_error_z / 200;
 }
 
-void Displacement_To_Serial() {
+void displacementToSerial() {
   Serial.print("Displacement - X:");
   Serial.print(dis_x);
   Serial.print(" Y:");
@@ -202,7 +202,7 @@ void Displacement_To_Serial() {
   Serial.print("\n");
 }
 
-void Velocity_To_Serial() {
+void velocityToSerial() {
   Serial.print("Velocity - X:");
   Serial.print(vel_x);
   Serial.print(" Y:");
@@ -210,7 +210,7 @@ void Velocity_To_Serial() {
   Serial.print("\n");
 }
 
-void Acceleration_To_Serial() {
+void accelerationToSerial() {
   Serial.print("Acceleration - X:");
   Serial.print(acc_x);
   Serial.print(" Y:");
